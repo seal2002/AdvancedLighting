@@ -9,7 +9,7 @@
 #include "common\Camera.h"
 #include "common\LoadTexture.h"
 
-#define PATH "..\\Projects\\1.AdvancedLighting"
+#define PATH "..\\Projects\\2.GammaCorrection"
 
 using namespace OpenGLWindow;
 
@@ -17,9 +17,10 @@ void do_movement();
 unsigned int loadTexture(const char *path);
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 bool* keys;
+bool gamma = false;
 
-static int SCR_W = 800;
-static int SCR_H = 600;
+static int SCR_W = 1280;
+static int SCR_H = 720;
 
 float groundVertices[] = {
     // positions            // normals         // texcoords
@@ -34,14 +35,14 @@ float groundVertices[] = {
 
 int main()
 {
-    Window window(SCR_W, SCR_H, "Advanced Lighting - Blinn Phong Shader");
+    Window window(SCR_W, SCR_H, "Gamma Correction");
 
     glEnable(GL_DEPTH_TEST);
-
+    
     string path(PATH);
-    path += "\\PhongShading";
-    Shader PhongShader(path.c_str());
-
+	path += "\\GammaCorrection";
+	Shader shader(path.c_str());
+    
     unsigned int groundVAO, groundVBO;
     glGenBuffers(1, &groundVBO);
     glBindBuffer(GL_ARRAY_BUFFER, groundVBO);
@@ -55,45 +56,54 @@ int main()
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)(6 * sizeof(GL_FLOAT)));
 
-    unsigned int groundTexture = loadTexture("..\\Resources\\wood.png");
-    
-    PhongShader.Use();
-    PhongShader.setInt("texture1", 0);
-    
-    // lighting info
+    // load textures
     // -------------
-    glm::vec3 lightPos(0.0f, 0.0f, 0.0f);
-    
-    
+    unsigned int floorTexture = loadTexture("..\\Resources\\wood.png");
+    unsigned int floorTextureGammaCorrected = loadTexture("..\\Resources\\wood.png", true);
+
+	// lighting info
+	// -------------
+	glm::vec3 lightPositions[] = {
+		glm::vec3(-3.0f, 0.0f, 0.0f),
+		glm::vec3(-1.0f, 0.0f, 0.0f),
+		glm::vec3(1.0f, 0.0f, 0.0f),
+		glm::vec3(3.0f, 0.0f, 0.0f)
+	};
+	glm::vec3 lightColors[] = {
+		glm::vec3(0.25),
+		glm::vec3(0.50),
+		glm::vec3(0.75),
+		glm::vec3(1.00)
+	};
+
     while (!window.shouldClose())
     {
         keys = window.getKeyPress();
         do_movement();
 
+		// render
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-        PhongShader.Use();
-        glm::mat4 projection = glm::perspective(45.0f, (float) SCR_W / (float) SCR_H, 0.1f, 100.0f);
-        glm::mat4 view = camera.GetViewMatrix();
-        PhongShader.setMat4("projection", projection);
-        PhongShader.setMat4("view", view);
-        // set light uniforms
-        PhongShader.setVec3("viewPos", camera.cameraPos);
-        PhongShader.setVec3("lightPos", lightPos);
-        PhongShader.setInt("blinn", 0);
-        
-        // floor
-        glBindVertexArray(groundVAO);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, groundTexture);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        
+		shader.Use();
+		glm::mat4 projection = glm::perspective(45.0f, (float)SCR_W / (float)SCR_H, 0.1f, 100.0f);
+		glm::mat4 view = camera.GetViewMatrix();
+		shader.setMat4("projection", projection);
+		shader.setMat4("view", view);
+		// set light uniforms
+		glUniform3fv(glGetUniformLocation(shader.Program, "lightPositions"), 4, &lightPositions[0][0]);
+		glUniform3fv(glGetUniformLocation(shader.Program, "lightColors"), 4, &lightColors[0][0]);
+		shader.setVec3("viewPos", camera.cameraPos);
+		shader.setInt("gamma", gamma);
+		// floor
+		glBindVertexArray(groundVAO);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, gamma ? floorTextureGammaCorrected : floorTexture);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
         window.swapBuffers();
         window.pollEvents();
     }
-    glDeleteBuffers(1, &groundVBO);
-    glDeleteVertexArrays(1, &groundVAO);
 }
 
 void do_movement()
