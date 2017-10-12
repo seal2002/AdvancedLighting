@@ -11,6 +11,7 @@ in VS_OUT {
 uniform sampler2D groundTexture;
 uniform vec3 lightPos;
 uniform vec3 viewPos;
+uniform bool blinn;
 
 void main()
 {
@@ -29,9 +30,18 @@ void main()
     float specularStrength = 0.5f;
     vec3 viewDir = normalize(viewPos - fs_in.FragPos);
     vec3 reflecDir = reflect(-lightDir, normal);
-    // Phong shading
-    float spec = pow(max(dot(viewDir, reflecDir), 0.0f), 8.0);
-    
+    float spec = 0.0;
+    if(blinn)
+    {
+        vec3 halfwayDir = normalize(lightDir + viewDir);  
+        spec = pow(max(dot(normal, halfwayDir), 0.0), 32.0);
+    }
+    else
+    {
+        // Phong shading
+        vec3 reflectDir = reflect(-lightDir, normal);
+        spec = pow(max(dot(viewDir, reflectDir), 0.0), 8.0);
+    }
     vec3 specular = vec3(specularStrength) * spec;
 
     vec3 result = (ambient + diffuse + specular);

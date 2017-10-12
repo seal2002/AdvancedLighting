@@ -81,6 +81,7 @@ int main()
         // set light uniforms
         PhongShader.setVec3("viewPos", camera.cameraPos);
         PhongShader.setVec3("lightPos", lightPos);
+        PhongShader.setInt("blinn", 0);
         
         // floor
         glBindVertexArray(groundVAO);
