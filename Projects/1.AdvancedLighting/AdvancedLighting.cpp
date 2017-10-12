@@ -91,6 +91,8 @@ int main()
         window.swapBuffers();
         window.pollEvents();
     }
+    glDeleteBuffers(1, &groundVBO);
+    glDeleteVertexArrays(1, &groundVAO);
 }
 
 void do_movement()

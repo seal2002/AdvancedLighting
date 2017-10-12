@@ -6,7 +6,8 @@
 
 // utility function for loading a 2D texture from file
 // ---------------------------------------------------
-unsigned int loadTexture(char const *path)
+
+unsigned int loadTexture(char const *path, bool isGammaCorrection)
 {
     unsigned int textureID;
     glGenTextures(1, &textureID);
@@ -17,18 +18,23 @@ unsigned int loadTexture(char const *path)
     if (data)
     {
         GLenum format;
+		GLenum internalFormat;
         if (nrComponents == 1)
             format = GL_RED;
-        else if (nrComponents == 3)
-            format = GL_RGB;
+		else if (nrComponents == 3)
+		{
+			internalFormat = isGammaCorrection ? GL_SRGB : GL_RGB;
+			format = GL_RGB;
+		}
         else if (nrComponents == 4)
         {
+			internalFormat = isGammaCorrection ? GL_SRGB_ALPHA : GL_RGBA;
             format = GL_RGBA;
             isAlpha = true;
         }
 
         glBindTexture(GL_TEXTURE_2D, textureID);
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
 
         if (isAlpha)
@@ -56,6 +62,11 @@ unsigned int loadTexture(char const *path)
     }
 
     return textureID;
+}
+
+unsigned int loadTexture(char const *path)
+{
+	return loadTexture(path, false);
 }
 
 unsigned int loadTextureCubeMap(vector<std::string> faces)
