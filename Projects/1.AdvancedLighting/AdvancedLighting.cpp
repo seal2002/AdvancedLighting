@@ -16,7 +16,9 @@ using namespace OpenGLWindow;
 void do_movement();
 unsigned int loadTexture(const char *path);
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-bool* keys;
+bool* keysPressed;
+bool* keysReleased;
+static bool Blinn = false;
 
 static int SCR_W = 800;
 static int SCR_H = 600;
@@ -67,7 +69,8 @@ int main()
     
     while (!window.shouldClose())
     {
-        keys = window.getKeyPress();
+        keysPressed = window.getKeyPress();
+        keysReleased = window.getKeyRelease();
         do_movement();
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -81,7 +84,7 @@ int main()
         // set light uniforms
         PhongShader.setVec3("viewPos", camera.cameraPos);
         PhongShader.setVec3("lightPos", lightPos);
-        PhongShader.setInt("blinn", 0);
+        PhongShader.setInt("blinn", Blinn ? 1 : 0);
         
         // floor
         glBindVertexArray(groundVAO);
@@ -98,36 +101,40 @@ int main()
 
 void do_movement()
 {
-    if (keys[GLFW_KEY_W])
+    if (keysPressed[GLFW_KEY_W])
     {
         camera.ProcessKeyboard(Camera_Movement::FORWARD);
     }
-    if (keys[GLFW_KEY_S])
+    if (keysPressed[GLFW_KEY_S])
     {
         camera.ProcessKeyboard(Camera_Movement::BACKWARD);
     }
-    if (keys[GLFW_KEY_A])
+    if (keysPressed[GLFW_KEY_A])
     {
         camera.ProcessKeyboard(Camera_Movement::LEFT);
     }
-    if (keys[GLFW_KEY_D])
+    if (keysPressed[GLFW_KEY_D])
     {
         camera.ProcessKeyboard(Camera_Movement::RIGHT);
     }
-    if (keys[GLFW_KEY_LEFT])
+    if (keysPressed[GLFW_KEY_LEFT])
     {
         camera.ProcessKeyboard(Camera_Movement::ROTATE_LEFT);
     }
-    if (keys[GLFW_KEY_RIGHT])
+    if (keysPressed[GLFW_KEY_RIGHT])
     {
         camera.ProcessKeyboard(Camera_Movement::ROTATE_RIGHT);
     }
-    if (keys[GLFW_KEY_UP])
+    if (keysPressed[GLFW_KEY_UP])
     {
         camera.ProcessKeyboard(Camera_Movement::ROTATE_UP);
     }
-    if (keys[GLFW_KEY_DOWN])
+    if (keysPressed[GLFW_KEY_DOWN])
     {
         camera.ProcessKeyboard(Camera_Movement::ROTATE_DOWN);
+    }
+    if (keysReleased[GLFW_KEY_C])
+    {
+        Blinn = !Blinn;
     }
 }

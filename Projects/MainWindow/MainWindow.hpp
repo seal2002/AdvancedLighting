@@ -30,6 +30,8 @@ namespace OpenGLWindow
 
         bool * getKeyPress() const noexcept;
 
+        bool * getKeyRelease() const noexcept;
+
     private:
         GLFWwindow* wnd;
     };

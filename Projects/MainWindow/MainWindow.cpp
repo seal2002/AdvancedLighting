@@ -6,7 +6,8 @@ namespace OpenGLWindow
 {
     void framebuffer_size_callback(GLFWwindow* window, int width, int height);
     void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
-    bool keys[GLFW_KEY_LAST];
+    bool keyPressed[GLFW_KEY_LAST];
+    bool keyReleased[GLFW_KEY_LAST];
     Window::Window(int width, int height, const std::string& title)
     {
         glfwInit();
@@ -56,6 +57,7 @@ namespace OpenGLWindow
     {
         if (glfwGetKey(wnd, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(wnd, true);
+        memset(keyReleased, 0, GLFW_KEY_LAST);
     }
 
     std::pair<int, int> Window::getWindowSize() const noexcept
@@ -67,7 +69,12 @@ namespace OpenGLWindow
 
     bool* Window::getKeyPress() const noexcept
     {
-        return keys;
+        return keyPressed;
+    }
+
+    bool * Window::getKeyRelease() const noexcept
+    {
+        return keyReleased;
     }
 
     void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -80,8 +87,11 @@ namespace OpenGLWindow
         if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
             glfwSetWindowShouldClose(window, GL_TRUE);
         if (action == GLFW_PRESS)
-            keys[key] = true;
+            keyPressed[key] = true;
         if (action == GLFW_RELEASE)
-            keys[key] = false;
+        {
+            keyPressed[key] = false;
+            keyReleased[key] = true;
+        }
     }
 }
