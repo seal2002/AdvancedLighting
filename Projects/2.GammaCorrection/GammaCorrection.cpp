@@ -17,7 +17,8 @@ void do_movement();
 unsigned int loadTexture(const char *path);
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 bool* keysPressed;
-bool gamma = false;
+bool* keysReleased;
+static bool gamma = false;
 
 static int SCR_W = 1280;
 static int SCR_H = 720;
@@ -79,7 +80,9 @@ int main()
     while (!window.shouldClose())
     {
         keysPressed = window.getKeyPress();
+		keysReleased = window.getKeyRelease();
         do_movement();
+		window.processInput();
 
 		// render
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -140,4 +143,8 @@ void do_movement()
     {
         camera.ProcessKeyboard(Camera_Movement::ROTATE_DOWN);
     }
+	if (keysReleased[GLFW_KEY_C])
+	{
+		gamma = !gamma;
+	}
 }
