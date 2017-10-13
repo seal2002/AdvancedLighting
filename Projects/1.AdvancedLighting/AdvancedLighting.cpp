@@ -72,7 +72,7 @@ int main()
         keysPressed = window.getKeyPress();
         keysReleased = window.getKeyRelease();
         do_movement();
-
+		window.processInput();
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
