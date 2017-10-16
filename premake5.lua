@@ -77,12 +77,8 @@ project "GLAD"
 
 -- Our second project, the static library
 project "OpenGLWindow"
-    -- kind is used to indicate the type of this project.
+
     kind "StaticLib"
-    -- We specify where the source files are.
-    -- It would be better to separate header files in a folder and sources
-    -- in another, but for our simple project we will put everything in the same place.
-    -- Note: ** means recurse in subdirectories, so it will get all the files in ExampleLib/
     files "Projects/MainWindow/**"
 
     -- We need GLFW, so we include it
@@ -91,12 +87,9 @@ project "OpenGLWindow"
 
 -- Our third project, the static library
 project "STB_IMAGE"
-    -- kind is used to indicate the type of this project.
+
     kind "StaticLib"
-    -- We specify where the source files are.
-    -- It would be better to separate header files in a folder and sources
-    -- in another, but for our simple project we will put everything in the same place.
-    -- Note: ** means recurse in subdirectories, so it will get all the files in ExampleLib/
+
     files "Projects/STB_IMAGE/**"
 
     -- We need GL, so we include it
@@ -121,17 +114,16 @@ function useOpenGLWindowLib()
     useGLADLib()
 end
 
--- The windowed app
-project "1.AdvancedLighting"
+-- Function Generate Project
+function GenerateProject(s)
+print("Generate Project " .. s)
+project (s)
     kind "ConsoleApp"
 
+    -- We also need the headers
     filter { "system:Windows" }
     files "Libraries/common/*.h"
 
-    filter { "system:Windows" }
-    files "Projects/1.AdvancedLighting/**"
-
-    -- We also need the headers
     includedirs "Projects/MainWindowLib"
     includedirs "Libraries"
 
@@ -145,26 +137,27 @@ project "1.AdvancedLighting"
     filter { "system:not windows" }
         links { "GL" }
 
--- The windowed app
-project "2.GammaCorrection"
-    kind "ConsoleApp"
+    -- filter { "system:windows" }
+    -- vpaths {
+    -- ["Headers"] = "Libraries/common/**.h",
+    -- ["Sources/*"] = "./Projects/" .. s .. "/**.cpp",
+    -- ["Shader"] = {"**.fs", "**.vs"}
+    -- }
 
     filter { "system:Windows" }
-    files "Libraries/common/*.h"
+    files { './Projects/' .. s .. '/**', }
+end
 
-    filter { "system:Windows" }
-    files "Projects/2.GammaCorrection/**"
+-- List of Project
+Projects = { "1.AdvancedLighting", "2.GammaCorrection", "3.1.ShadowMappingDepth", "3.2.ShadowMappingBase"}
 
-    -- We also need the headers
-    includedirs "Projects/MainWindowLib"
-    includedirs "Libraries"
+-- Generated project in List
+for key, value in ipairs(Projects) do
+    GenerateProject(value)
+end
 
-    useOpenGLWindowLib()
-    links "STB_IMAGE"
-    -- Now we need to add the OpenGL system libraries
-
-    filter { "system:windows" }
-        links { "OpenGL32" }
-
-    filter { "system:not windows" }
-        links { "GL" }
+-- Clean Generead Project
+if _ACTION == "clean" then
+   os.rmdir("./Generated")
+   os.rmdir("./Build")
+end

@@ -41,7 +41,7 @@ int main()
     glEnable(GL_DEPTH_TEST);
 
     string path(PATH);
-    path += "\\PhongShading";
+    path += "\\BlinnPhongShading";
     Shader PhongShader(path.c_str());
 
     unsigned int groundVAO, groundVBO;
@@ -58,21 +58,17 @@ int main()
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)(6 * sizeof(GL_FLOAT)));
 
     unsigned int groundTexture = loadTexture("..\\Resources\\wood.png");
-    
-    PhongShader.Use();
-    PhongShader.setInt("texture1", 0);
-    
+
     // lighting info
     // -------------
     glm::vec3 lightPos(0.0f, 0.0f, 0.0f);
-    
-    
+
     while (!window.shouldClose())
     {
         keysPressed = window.getKeyPress();
         keysReleased = window.getKeyRelease();
         do_movement();
-		window.processInput();
+        window.processInput();
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
@@ -85,13 +81,13 @@ int main()
         PhongShader.setVec3("viewPos", camera.cameraPos);
         PhongShader.setVec3("lightPos", lightPos);
         PhongShader.setInt("blinn", Blinn ? 1 : 0);
-        
+        cout << (Blinn ? "Blinn" : "Phong") << endl;
         // floor
         glBindVertexArray(groundVAO);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, groundTexture);
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        
+
         window.swapBuffers();
         window.pollEvents();
     }
