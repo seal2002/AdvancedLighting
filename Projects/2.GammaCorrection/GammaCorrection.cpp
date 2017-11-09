@@ -39,11 +39,11 @@ int main()
     Window window(SCR_W, SCR_H, "Gamma Correction");
 
     glEnable(GL_DEPTH_TEST);
-    
+
     string path(PATH);
-	path += "\\GammaCorrection";
-	Shader shader(path.c_str());
-    
+    path += "\\GammaCorrection";
+    Shader shader(path.c_str());
+
     unsigned int groundVAO, groundVBO;
     glGenBuffers(1, &groundVBO);
     glBindBuffer(GL_ARRAY_BUFFER, groundVBO);
@@ -62,47 +62,47 @@ int main()
     unsigned int floorTexture = loadTexture("..\\Resources\\wood.png");
     unsigned int floorTextureGammaCorrected = loadTexture("..\\Resources\\wood.png", true);
 
-	// lighting info
-	// -------------
-	glm::vec3 lightPositions[] = {
-		glm::vec3(-3.0f, 0.0f, 0.0f),
-		glm::vec3(-1.0f, 0.0f, 0.0f),
-		glm::vec3(1.0f, 0.0f, 0.0f),
-		glm::vec3(3.0f, 0.0f, 0.0f)
-	};
-	glm::vec3 lightColors[] = {
-		glm::vec3(0.25),
-		glm::vec3(0.50),
-		glm::vec3(0.75),
-		glm::vec3(1.00)
-	};
+    // lighting info
+    // -------------
+    glm::vec3 lightPositions[] = {
+        glm::vec3(-3.0f, 0.0f, 0.0f),
+        glm::vec3(-1.0f, 0.0f, 0.0f),
+        glm::vec3(1.0f, 0.0f, 0.0f),
+        glm::vec3(3.0f, 0.0f, 0.0f)
+    };
+    glm::vec3 lightColors[] = {
+        glm::vec3(0.25),
+        glm::vec3(0.50),
+        glm::vec3(0.75),
+        glm::vec3(1.00)
+    };
 
     while (!window.shouldClose())
     {
         keysPressed = window.getKeyPress();
-		keysReleased = window.getKeyRelease();
+        keysReleased = window.getKeyRelease();
         do_movement();
-		window.processInput();
+        window.processInput();
 
-		// render
+        // render
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-		shader.Use();
-		glm::mat4 projection = glm::perspective(45.0f, (float)SCR_W / (float)SCR_H, 0.1f, 100.0f);
-		glm::mat4 view = camera.GetViewMatrix();
-		shader.setMat4("projection", projection);
-		shader.setMat4("view", view);
-		// set light uniforms
-		glUniform3fv(glGetUniformLocation(shader.Program, "lightPositions"), 4, &lightPositions[0][0]);
-		glUniform3fv(glGetUniformLocation(shader.Program, "lightColors"), 4, &lightColors[0][0]);
-		shader.setVec3("viewPos", camera.cameraPos);
-		shader.setInt("gamma", gamma);
-		// floor
-		glBindVertexArray(groundVAO);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, gamma ? floorTextureGammaCorrected : floorTexture);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+        shader.Use();
+        glm::mat4 projection = glm::perspective(45.0f, (float)SCR_W / (float)SCR_H, 0.1f, 100.0f);
+        glm::mat4 view = camera.GetViewMatrix();
+        shader.setMat4("projection", projection);
+        shader.setMat4("view", view);
+        // set light uniforms
+        glUniform3fv(glGetUniformLocation(shader.Program, "lightPositions"), 4, &lightPositions[0][0]);
+        glUniform3fv(glGetUniformLocation(shader.Program, "lightColors"), 4, &lightColors[0][0]);
+        shader.setVec3("viewPos", camera.cameraPos);
+        shader.setInt("gamma", gamma);
+        // floor
+        glBindVertexArray(groundVAO);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, gamma ? floorTextureGammaCorrected : floorTexture);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
         window.swapBuffers();
         window.pollEvents();
@@ -143,8 +143,8 @@ void do_movement()
     {
         camera.ProcessKeyboard(Camera_Movement::ROTATE_DOWN);
     }
-	if (keysReleased[GLFW_KEY_C])
-	{
-		gamma = !gamma;
-	}
+    if (keysReleased[GLFW_KEY_C])
+    {
+        gamma = !gamma;
+    }
 }

@@ -24,22 +24,22 @@ vec3 BlinnPhong(vec3 normal, vec3 fragPos, vec3 lightPos, vec3 lightColor)
     vec3 viewDir = normalize(viewPos - fragPos);
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = 0.0;
-    vec3 halfwayDir = normalize(lightDir + viewDir);  
+    vec3 halfwayDir = normalize(lightDir + viewDir);
     spec = pow(max(dot(normal, halfwayDir), 0.0), 64.0);
-    vec3 specular = spec * lightColor;    
+    vec3 specular = spec * lightColor;
     // simple attenuation
     float max_distance = 1.5;
     float distance = length(lightPos - fragPos);
     float attenuation = 1.0 / (gamma ? distance * distance : distance);
-    
+
     diffuse *= attenuation;
     specular *= attenuation;
-    
+
     return diffuse + specular;
 }
 
 void main()
-{           
+{
     vec3 color = texture(floorTexture, fs_in.TexCoords).rgb;
     vec3 lighting = vec3(0.0);
     for(int i = 0; i < 4; ++i)

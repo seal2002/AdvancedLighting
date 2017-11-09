@@ -18,17 +18,17 @@ unsigned int loadTexture(char const *path, bool isGammaCorrection)
     if (data)
     {
         GLenum format;
-		GLenum internalFormat;
+        GLenum internalFormat;
         if (nrComponents == 1)
             format = GL_RED;
-		else if (nrComponents == 3)
-		{
-			internalFormat = isGammaCorrection ? GL_SRGB : GL_RGB;
-			format = GL_RGB;
-		}
+        else if (nrComponents == 3)
+        {
+            internalFormat = isGammaCorrection ? GL_SRGB : GL_RGB;
+            format = GL_RGB;
+        }
         else if (nrComponents == 4)
         {
-			internalFormat = isGammaCorrection ? GL_SRGB_ALPHA : GL_RGBA;
+            internalFormat = isGammaCorrection ? GL_SRGB_ALPHA : GL_RGBA;
             format = GL_RGBA;
             isAlpha = true;
         }
@@ -66,7 +66,7 @@ unsigned int loadTexture(char const *path, bool isGammaCorrection)
 
 unsigned int loadTexture(char const *path)
 {
-	return loadTexture(path, false);
+    return loadTexture(path, false);
 }
 
 unsigned int loadTextureCubeMap(vector<std::string> faces)
@@ -74,8 +74,8 @@ unsigned int loadTextureCubeMap(vector<std::string> faces)
     unsigned int textureID;
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-	stbi_set_flip_vertically_on_load(0);
-	// This code is correct for Cube Map load, for this, we don't need to flip Y coordinate, it cost a lot of time to determine about it
+    stbi_set_flip_vertically_on_load(0);
+    // This code is correct for Cube Map load, for this, we don't need to flip Y coordinate, it cost a lot of time to determine about it
     int width, height, nrComponents;
     for (unsigned int i = 0; i < faces.size(); i++)
     {

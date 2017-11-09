@@ -44,7 +44,6 @@ private:
     return "../../../" + path;
   }
 
-
 };
 
 // FILESYSTEM_H
