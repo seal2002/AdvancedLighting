@@ -120,32 +120,32 @@ public:
 class Ground
 {
 private:
-	unsigned int groundVAO, groundVBO;
+    unsigned int groundVAO, groundVBO;
 public:
-	void Init()
-	{
-		glGenBuffers(1, &groundVBO);
-		glBindBuffer(GL_ARRAY_BUFFER, groundVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(groundVertices), groundVertices, GL_STATIC_DRAW);
-		glGenVertexArrays(1, &groundVAO);
-		glBindVertexArray(groundVAO);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)0);
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)(3 * sizeof(GL_FLOAT)));
-		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)(6 * sizeof(GL_FLOAT)));
-	}
+    void Init()
+    {
+        glGenBuffers(1, &groundVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, groundVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(groundVertices), groundVertices, GL_STATIC_DRAW);
+        glGenVertexArrays(1, &groundVAO);
+        glBindVertexArray(groundVAO);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)(3 * sizeof(GL_FLOAT)));
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)(6 * sizeof(GL_FLOAT)));
+    }
 
-	void Render(Shader shader)
-	{
-		glm::mat4 model;
-		shader.setMat4("model", model);
-		// render Ground
-		glBindVertexArray(groundVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		glBindVertexArray(0);
-	}
+    void Render(Shader shader)
+    {
+        glm::mat4 model;
+        shader.setMat4("model", model);
+        // render Ground
+        glBindVertexArray(groundVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+    }
 };
 
 Cube cube;
@@ -164,10 +164,10 @@ int main()
     path += "\\DebugQuadDepth";
     Shader debugDepthQuad(path.c_str());
 
-	path = string(PATH);
-	path += "\\ShadowMapping";
-	Shader shader(path.c_str());
-   
+    path = string(PATH);
+    path += "\\ShadowMapping";
+    Shader shader(path.c_str());
+
 
     // load textures
     // -------------
@@ -199,12 +199,13 @@ int main()
 
     // Init Cube
     cube.Init();
-	ground.Init();
+    ground.Init();
 
-	shader.setInt("diffuseTexture", 0);
-	shader.setInt("shadowMap", 1);
-	debugDepthQuad.Use();
-	debugDepthQuad.setInt("depthMap", 0);
+    shader.use();
+    shader.setInt("diffuseTexture", 0);
+    shader.setInt("shadowMap", 1);
+    debugDepthQuad.use();
+    debugDepthQuad.setInt("depthMap", 0);
 
     while (!window.shouldClose())
     {
@@ -225,7 +226,7 @@ int main()
         lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
         lightSpaceMatrix = lightProjection * lightView;
         // render scene from ligh's point of view
-        simpleDepthshader.Use();
+        simpleDepthshader.use();
         simpleDepthshader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
 
         glViewport(0, 0, SHADOW_W, SHADOW_H);
@@ -240,27 +241,27 @@ int main()
         glViewport(0, 0, SCR_W, SCR_H);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// 2. render scene as normal using the generated depth/shadow map  
-		// --------------------------------------------------------------
-		glViewport(0, 0, SCR_W, SCR_H);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		shader.Use();
-		glm::mat4 projection = glm::perspective(45.0f, (float)SCR_W / (float)SCR_H, 0.1f, 100.0f);
-		glm::mat4 view = camera.GetViewMatrix();
-		shader.setMat4("projection", projection);
-		shader.setMat4("view", view);
-		// set light uniforms
-		shader.setVec3("viewPos", camera.cameraPos);
-		shader.setVec3("lightPos", lightPos);
-		shader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, woodTexture);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, depthMapTexture);
-		renderScene(shader);
+        // 2. render scene as normal using the generated depth/shadow map
+        // --------------------------------------------------------------
+        glViewport(0, 0, SCR_W, SCR_H);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        shader.use();
+        glm::mat4 projection = glm::perspective(45.0f, (float)SCR_W / (float)SCR_H, 0.1f, 100.0f);
+        glm::mat4 view = camera.GetViewMatrix();
+        shader.setMat4("projection", projection);
+        shader.setMat4("view", view);
+        // set light uniforms
+        shader.setVec3("viewPos", camera.cameraPos);
+        shader.setVec3("lightPos", lightPos);
+        shader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, woodTexture);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, depthMapTexture);
+        renderScene(shader);
         // render Depth map to quad for visual debugging
         // ---------------------------------------------
-        debugDepthQuad.Use();
+        debugDepthQuad.use();
         debugDepthQuad.setFloat("near_plane", near_plane);
         debugDepthQuad.setFloat("far_plane", far_plane);
         glActiveTexture(GL_TEXTURE0);
@@ -274,8 +275,8 @@ int main()
 
 void renderScene(const Shader &shader)
 {
-	// ground
-	ground.Render(shader);
+    // ground
+    ground.Render(shader);
     // cubes
     glm::mat4 model;
     model = glm::mat4();
