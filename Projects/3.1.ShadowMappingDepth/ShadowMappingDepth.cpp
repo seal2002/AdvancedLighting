@@ -215,7 +215,7 @@ int main()
         lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
         lightSpaceMatrix = lightProjection * lightView;
         // render scene from ligh's point of view
-        simpleDepthshader.Use();
+        simpleDepthshader.use();
         simpleDepthshader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
 
         glViewport(0, 0, SHADOW_W, SHADOW_H);
@@ -232,7 +232,7 @@ int main()
 
         // render Depth map to quad for visual debugging
         // ---------------------------------------------
-        debugDepthQuad.Use();
+        debugDepthQuad.use();
         debugDepthQuad.setFloat("near_plane", near_plane);
         debugDepthQuad.setFloat("far_plane", far_plane);
         glActiveTexture(GL_TEXTURE0);

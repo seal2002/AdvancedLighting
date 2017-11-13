@@ -88,7 +88,7 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-        shader.Use();
+        shader.use();
         glm::mat4 projection = glm::perspective(45.0f, (float)SCR_W / (float)SCR_H, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
         shader.setMat4("projection", projection);
