@@ -117,7 +117,39 @@ public:
     }
 };
 
+class Ground
+{
+private:
+    unsigned int groundVAO, groundVBO;
+public:
+    void Init()
+    {
+        glGenBuffers(1, &groundVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, groundVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(groundVertices), groundVertices, GL_STATIC_DRAW);
+        glGenVertexArrays(1, &groundVAO);
+        glBindVertexArray(groundVAO);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)(3 * sizeof(GL_FLOAT)));
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)(6 * sizeof(GL_FLOAT)));
+    }
+
+    void Render(Shader shader)
+    {
+        glm::mat4 model;
+        shader.setMat4("model", model);
+        // render Ground
+        glBindVertexArray(groundVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+    }
+};
+
 Cube cube;
+Ground ground;
 
 int main()
 {
@@ -131,19 +163,6 @@ int main()
     path = string(PATH);
     path += "\\DebugQuadDepth";
     Shader debugDepthQuad(path.c_str());
-
-    unsigned int groundVAO, groundVBO;
-    glGenBuffers(1, &groundVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, groundVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(groundVertices), groundVertices, GL_STATIC_DRAW);
-    glGenVertexArrays(1, &groundVAO);
-    glBindVertexArray(groundVAO);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)(3 * sizeof(GL_FLOAT)));
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)(6 * sizeof(GL_FLOAT)));
 
     // load textures
     // -------------
@@ -175,6 +194,7 @@ int main()
 
     // Init Cube
     cube.Init();
+    ground.Init();
 
     while (!window.shouldClose())
     {
@@ -203,10 +223,6 @@ int main()
             glClear(GL_DEPTH_BUFFER_BIT);
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, woodTexture);
-            glm::mat4 model;
-            simpleDepthshader.setMat4("model", model);
-            glBindVertexArray(groundVAO);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
             renderScene(simpleDepthshader);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -230,6 +246,8 @@ int main()
 
 void renderScene(const Shader &shader)
 {
+    // Ground
+    ground.Render(shader);
     // cubes
     glm::mat4 model;
     model = glm::mat4();
