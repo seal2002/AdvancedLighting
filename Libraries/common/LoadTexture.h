@@ -19,8 +19,11 @@ unsigned int loadTexture(char const *path, bool isGammaCorrection)
     {
         GLenum format;
         GLenum internalFormat;
-        if (nrComponents == 1)
-            format = GL_RED;
+		if (nrComponents == 1)
+		{
+			format = GL_RED;
+			internalFormat = GL_RED;
+		}
         else if (nrComponents == 3)
         {
             internalFormat = isGammaCorrection ? GL_SRGB : GL_RGB;
