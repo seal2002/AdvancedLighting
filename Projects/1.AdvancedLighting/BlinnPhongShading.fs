@@ -19,7 +19,7 @@ void main()
     // Ambient
     float ambientStrength = 0.05;
     vec3 ambient = ambientStrength * color;
-    
+
     // Diffuse
     vec3 normal = normalize(fs_in.Normal);
     vec3 lightDir = normalize(lightPos - fs_in.FragPos);
@@ -33,7 +33,7 @@ void main()
     float spec = 0.0;
     if(blinn)
     {
-        vec3 halfwayDir = normalize(lightDir + viewDir);  
+        vec3 halfwayDir = normalize(lightDir + viewDir);
         spec = pow(max(dot(normal, halfwayDir), 0.0), 32.0);
     }
     else

@@ -17,7 +17,6 @@ uniform mat4 projection;
 
 void main()
 {
-
     vs_out.FragPos = aPosition;
     vs_out.Normal = aNormal;
     vs_out.TexCoords = aTexCoords;
