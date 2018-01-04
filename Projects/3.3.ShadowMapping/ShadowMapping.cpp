@@ -171,6 +171,10 @@ int main()
     path += "\\ShadowMapping";
     Shader shader(path.c_str());
 
+    path = string(PATH);
+    path += "\\light";
+    Shader shaderLight(path.c_str());
+
 
     // load textures
     // -------------
@@ -264,6 +268,16 @@ int main()
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, depthMapTexture);
         renderScene(shader);
+
+        // Render light
+        shaderLight.use();
+        shaderLight.setMat4("projection", projection);
+        shaderLight.setMat4("view", view);
+        glm::mat4 model;
+        model = glm::mat4();
+        model = glm::translate(model, lightPos);
+        model = glm::scale(model, glm::vec3(0.1f));
+        cube.Render(shaderLight, model);
 
         window.swapBuffers();
         window.pollEvents();
