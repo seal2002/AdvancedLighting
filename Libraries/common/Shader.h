@@ -29,15 +29,15 @@ public:
 
     Shader(const std::string &vertexPath, const std::string &fragmentPath)
     {
-        Init(vertexPath.c_str(), fragmentPath.c_str());
+        Init(vertexPath, fragmentPath);
     }
 
-    Shader(const std::string &vertexPath, const std::string &fragmentPath, const std::string &geometryPath = NULL)
+    Shader(const std::string &vertexPath, const std::string &fragmentPath, const std::string &geometryPath = "")
     {
-        Init(vertexPath.c_str(), fragmentPath.c_str(), geometryPath.c_str());
+        Init(vertexPath, fragmentPath, geometryPath);
     }
 
-    bool Init(const char* vertexPath, const char* fragmentPath, const char* geometryPath = NULL)
+    bool Init(const std::string &vertexPath, const std::string &fragmentPath, const std::string &geometryPath = "")
     {
         string vertexCode;
         string fragmentCode;
@@ -69,7 +69,7 @@ public:
             return false;
         }
 
-        if (geometryPath != NULL)
+        if (geometryPath.compare("") != 0)
         {
             try
             {
@@ -122,7 +122,7 @@ public:
             return false;
         }
         //if  geometry path is given, compile geometry shader
-        if (geometryPath != NULL)
+        if (geometryPath.compare("") != 0)
         {
             const char* gShaderCode = geometryCode.c_str();
             geometry = glCreateShader(GL_GEOMETRY_SHADER);
@@ -142,7 +142,7 @@ public:
         this->Program = glCreateProgram();
         glAttachShader(this->Program, vertex);
         glAttachShader(this->Program, fragment);
-        if (geometryPath != NULL)
+        if (geometryPath.compare("") != 0)
         {
             glAttachShader(this->Program, geometry);
         }
@@ -158,6 +158,8 @@ public:
 
         glDeleteShader(vertex);
         glDeleteShader(fragment);
+        if (!geometryPath.compare(""))
+            glDeleteShader(geometry);
         return true;
     }
 
