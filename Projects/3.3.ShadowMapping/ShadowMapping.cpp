@@ -8,6 +8,7 @@
 #include "common\Shader.h"
 #include "common\Camera.h"
 #include "common\LoadTexture.h"
+#include "common\TextRendering.h"
 
 #define PATH "..\\Projects\\3.3.ShadowMapping"
 
@@ -26,6 +27,10 @@ static int SCR_H = 720;
 
 const int SHADOW_W = 1024;
 const int SHADOW_H = 1024;
+
+// timing
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
 
 float cubeVertices[] = {
     // back face
@@ -165,16 +170,19 @@ int main()
 
     string path(PATH);
     path += "\\ShadowMappingDepth";
-    Shader simpleDepthshader(path.c_str());
+    Shader simpleDepthshader(path);
 
     path = string(PATH);
     path += "\\ShadowMapping";
-    Shader shader(path.c_str());
+    Shader shader(path);
 
     path = string(PATH);
     path += "\\light";
-    Shader shaderLight(path.c_str());
+    Shader shaderLight(path);
 
+    path = string(PATH);
+    path += "\\text";
+    Shader shaderText(path);
 
     // load textures
     // -------------
@@ -214,8 +222,19 @@ int main()
     shader.setInt("diffuseTexture", 0);
     shader.setInt("shadowMap", 1);
 
+    // Init Text FPS
+    char textFPS[50];
+    TextRendering textRendering(SCR_W, SCR_H);
+    
     while (!window.shouldClose())
     {
+        // per-frame time logic
+        // --------------------
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+        float FPS = 1.0f / deltaTime;
+
         keysPressed = window.getKeyPress();
         do_movement();
         window.processInput();
@@ -278,6 +297,15 @@ int main()
         model = glm::translate(model, lightPos);
         model = glm::scale(model, glm::vec3(0.1f));
         cube.Render(shaderLight, model);
+
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        sprintf(textFPS, "FPS = %f", FPS);
+        textRendering.RenderText(shaderText, textFPS, 25.0f, SCR_H - 25.0f, 0.5f, glm::vec3(0.5, 0.8f, 0.2f));
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_BLEND);
 
         window.swapBuffers();
         window.pollEvents();

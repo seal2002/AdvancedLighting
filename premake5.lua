@@ -62,6 +62,16 @@ function linkAssimp()
     filter {}
 end
 
+-- This function links statically against Freetype
+function linkFreetype()
+    libdirs "Libraries/freetype/lib"
+
+    -- Our static lib should not link against Freetype
+    filter "kind:not StaticLib"
+        links "freetype281d"
+    filter {}
+end
+
 -- Our first project, the static library
 project "GLAD"
     -- kind is used to indicate the type of this project.
@@ -126,8 +136,10 @@ project (s)
 
     includedirs "Projects/MainWindowLib"
     includedirs "Libraries"
+    includedirs "Libraries/freetype/include"
 
     useOpenGLWindowLib()
+    linkFreetype()
     links "STB_IMAGE"
     -- Now we need to add the OpenGL system libraries
 

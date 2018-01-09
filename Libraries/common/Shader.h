@@ -20,26 +20,24 @@ class Shader
 public:
     GLuint Program;
 
-    Shader(const GLchar* Path)
+    Shader(std::string Path)
     {
-        GLchar * vertexPath = new char[MAX_CHAR];
-        GLchar * fragmentPath = new char[MAX_CHAR];
-        sprintf(vertexPath, "%s.vs", Path);
-        sprintf(fragmentPath, "%s.fs", Path);
-        Init((const GLchar*)vertexPath, (const GLchar*)fragmentPath);
+        std::string pathVS = Path + ".vs";
+        std::string pathFS = Path + ".fs";
+        Init(pathVS.c_str(), pathFS.c_str());
     }
 
-    Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
+    Shader(const std::string &vertexPath, const std::string &fragmentPath)
     {
-        Init(vertexPath, fragmentPath);
+        Init(vertexPath.c_str(), fragmentPath.c_str());
     }
 
-    Shader(const GLchar* vertexPath, const GLchar* fragmentPath, const GLchar* geometryPath)
+    Shader(const std::string &vertexPath, const std::string &fragmentPath, const std::string &geometryPath = NULL)
     {
-        Init(vertexPath, fragmentPath, geometryPath);
+        Init(vertexPath.c_str(), fragmentPath.c_str(), geometryPath.c_str());
     }
 
-    bool Init(const GLchar* vertexPath, const GLchar* fragmentPath, const GLchar* geometryPath = NULL)
+    bool Init(const char* vertexPath, const char* fragmentPath, const char* geometryPath = NULL)
     {
         string vertexCode;
         string fragmentCode;
