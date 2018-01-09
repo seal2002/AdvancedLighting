@@ -168,45 +168,45 @@ public:
         glUseProgram(this->Program);
     }
 
-    void setFloat(const char * variable, float value) const
+    void setFloat(const std::string &variable, float value) const
     {
-        GLint variableLoc = glGetUniformLocation(this->Program, variable);
+        GLint variableLoc = glGetUniformLocation(this->Program, variable.c_str());
         glUniform1f(variableLoc, value);
     }
 
-    void setInt(const char * variable, int value) const
+    void setInt(const std::string &variable, int value) const
     {
-        GLint variableLoc = glGetUniformLocation(this->Program, variable);
+        GLint variableLoc = glGetUniformLocation(this->Program, variable.c_str());
         glUniform1i(variableLoc, value);
     }
 
-    void setVec2(const char * variable, const glm::vec2 &value) const
+    void setVec2(const std::string &variable, const glm::vec2 &value) const
     {
-        GLint variableLoc = glGetUniformLocation(this->Program, variable);
+        GLint variableLoc = glGetUniformLocation(this->Program, variable.c_str());
         glUniform2f(variableLoc, value.x, value.y);
     }
 
-    void setVec3(const char * variable, float x, float y, float z) const
+    void setVec3(const std::string &variable, float x, float y, float z) const
     {
-        GLint variableLoc = glGetUniformLocation(this->Program, variable);
+        GLint variableLoc = glGetUniformLocation(this->Program, variable.c_str());
         glUniform3f(variableLoc, x, y, z);
     }
 
-    void setVec3(const char * variable, const glm::vec3 &value) const
+    void setVec3(const std::string &variable, const glm::vec3 &value) const
     {
-        GLint variableLoc = glGetUniformLocation(this->Program, variable);
+        GLint variableLoc = glGetUniformLocation(this->Program, variable.c_str());
         glUniform3f(variableLoc, value.x, value.y, value.z);
     }
 
-    void setVec4(const char * variable, float x, float y, float z, float w) const
+    void setVec4(const std::string &variable, float x, float y, float z, float w) const
     {
-        GLint variableLoc = glGetUniformLocation(this->Program, variable);
+        GLint variableLoc = glGetUniformLocation(this->Program, variable.c_str());
         glUniform4f(variableLoc, x, y, z, w);
     }
 
-    void setMat4(const char * variable, const glm::mat4 &value) const
+    void setMat4(const std::string &variable, const glm::mat4 &value) const
     {
-        GLint variableLoc = glGetUniformLocation(this->Program, variable);
+        GLint variableLoc = glGetUniformLocation(this->Program, variable.c_str());
         glUniformMatrix4fv(variableLoc, 1, GL_FALSE, &value[0][0]);
     }
 };
