@@ -162,7 +162,7 @@ end
 
 -- List of Project
 Projects = { "1.AdvancedLighting", "2.GammaCorrection", "3.1.ShadowMappingDepth", "3.2.ShadowMappingBase",
-            "3.3.ShadowMapping", "3.4.PointShadow"}
+            "3.3.ShadowMapping", "3.4.PointShadow", "4.1.NormalMapping"}
 
 -- Generated project in List
 for key, value in ipairs(Projects) do
