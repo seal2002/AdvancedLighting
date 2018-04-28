@@ -1,6 +1,3 @@
-#ifndef __CAMERA_H__
-#define __CAMERA_H__
-
 #pragma once
 
 #include <glad/glad.h>
@@ -90,6 +87,3 @@ private:
 
     }
 };
-
-
-#endif
