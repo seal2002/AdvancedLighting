@@ -157,6 +157,10 @@ void main()
     path = string(PATH);
     path += "\\light";
     Shader lightShader(path);
+
+    path = string(PATH);
+    path += "\\visualizingNormal";
+    Shader visualizingNormalShader((path + ".vs").c_str(), (path + ".fs").c_str(), (path + ".gs").c_str());
     // load textures
     // -------------
     unsigned int wallTexture = loadTexture("..\\Resources\\brickwall.jpg");
@@ -188,9 +192,12 @@ void main()
         glm::mat4 view = camera.GetViewMatrix();
         NormalShader.setMat4("projection", projection);
         NormalShader.setMat4("view", view);
+
+
         // set light uniforms
         NormalShader.setVec3("viewPos", camera.cameraPos);
         NormalShader.setVec3("lightPos", lightPos);
+
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, wallTexture);
         glActiveTexture(GL_TEXTURE1);
@@ -200,6 +207,14 @@ void main()
         model = glm::mat4();
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0));
         face.Render(NormalShader, model);
+
+        //// Set attribute for Visualizing Normal Vector
+        //visualizingNormalShader.use();
+        //visualizingNormalShader.setMat4("projection", projection);
+        //visualizingNormalShader.setMat4("view", view);
+
+        //// Render Normal Vector
+        //face.Render(visualizingNormalShader, model);
 
         // Render light
         lightShader.use();
