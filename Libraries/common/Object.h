@@ -62,6 +62,10 @@ public:
         glBindVertexArray(0);
     }
 
-    ~Object() {}
+    ~Object() 
+    {
+        glDeleteBuffers(1, &VBO);
+        glDeleteVertexArrays(1, &VAO);
+    }
 };
 
