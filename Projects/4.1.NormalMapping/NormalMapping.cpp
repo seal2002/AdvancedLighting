@@ -48,13 +48,10 @@ void main()
     // lighting info
     // -------------
     glm::vec3 lightPos(0.0f, 0.0f, 4.0f);
-    path = string(PATH);
-    path += "\\Cube.txt";
-    // Init Cube
-    cube.Load(path.c_str());
-    path = string(PATH);
-    path += "\\Face.txt";
-    face.Load(path.c_str());
+
+    // Init Vertex data
+    cube.Load("..\\Resources\\Cube.txt");
+    face.Load("..\\Resources\\Face.txt");
 
     NormalShader.use();
     NormalShader.setInt("diffuseTexture", 0);
