@@ -8,6 +8,7 @@
 #include "common\Shader.h"
 #include "common\Camera.h"
 #include "common\LoadTexture.h"
+#include "common\Object.h"
 
 #define PATH "..\\Projects\\2.GammaCorrection"
 
@@ -22,17 +23,7 @@ static bool gamma = false;
 
 static int SCR_W = 1280;
 static int SCR_H = 720;
-
-float groundVertices[] = {
-    // positions            // normals         // texcoords
-    10.0f, -0.5f,  10.0f,  0.0f, 1.0f, 0.0f,  10.0f,  0.0f,
-    -10.0f, -0.5f,  10.0f,  0.0f, 1.0f, 0.0f,   0.0f,  0.0f,
-    -10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,   0.0f, 10.0f,
-
-    10.0f, -0.5f,  10.0f,  0.0f, 1.0f, 0.0f,  10.0f,  0.0f,
-    -10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,   0.0f, 10.0f,
-    10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,  10.0f, 10.0f
-};
+Object *Ground;
 
 int main()
 {
@@ -44,18 +35,8 @@ int main()
     path += "\\GammaCorrection";
     Shader shader(path.c_str());
 
-    unsigned int groundVAO, groundVBO;
-    glGenBuffers(1, &groundVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, groundVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(groundVertices), groundVertices, GL_STATIC_DRAW);
-    glGenVertexArrays(1, &groundVAO);
-    glBindVertexArray(groundVAO);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)(3 * sizeof(GL_FLOAT)));
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)(6 * sizeof(GL_FLOAT)));
+    Ground = new Object();
+    Ground->Load("..\\Resources\\Ground.txt");
 
     // load textures
     // -------------
@@ -98,11 +79,12 @@ int main()
         glUniform3fv(glGetUniformLocation(shader.Program, "lightColors"), 4, &lightColors[0][0]);
         shader.setVec3("viewPos", camera.cameraPos);
         shader.setInt("gamma", gamma);
-        // floor
-        glBindVertexArray(groundVAO);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, gamma ? floorTextureGammaCorrected : floorTexture);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glm::mat4 model;
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, gamma ? floorTextureGammaCorrected : floorTexture);
+		// floor
+		Ground->Render(shader, model);
 
         window.swapBuffers();
         window.pollEvents();

@@ -35,10 +35,8 @@ int main()
     path += "\\BlinnPhongShading";
     Shader PhongShader(path.c_str());
 
-    path = string(PATH);
-    path += "\\Ground.txt";
     Ground = new Object();
-    Ground->Load(path.c_str());
+    Ground->Load("..\\Resources\\Ground.txt");
 
     unsigned int groundTexture = loadTexture("..\\Resources\\wood.png");
 
