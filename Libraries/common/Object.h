@@ -37,7 +37,7 @@ public:
             while (std::getline(fstream, line))
             {
                 float var;
-                if (line.compare("/") == 1)
+                if (line.compare(0, 1, "/") == 0)
                     continue;
                 numline++;
                 istringstream ss(line);
@@ -45,6 +45,12 @@ public:
                     arr.push_back(var);
             }
         }
+		else
+		{
+			std::cout << "Can not load the file " << fileName << std::endl;
+		}
+		fstream.close();
+
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
         // fill buffer
