@@ -8,6 +8,7 @@
 #include "common\Shader.h"
 #include "common\Camera.h"
 #include "common\LoadTexture.h"
+#include "common\Object.h"
 
 #define PATH "..\\Projects\\1.AdvancedLighting"
 
@@ -22,17 +23,7 @@ static bool Blinn = false;
 
 static int SCR_W = 800;
 static int SCR_H = 600;
-
-float groundVertices[] = {
-    // positions            // normals         // texcoords
-    10.0f, -0.5f,  10.0f,  0.0f, 1.0f, 0.0f,  10.0f,  0.0f,
-    -10.0f, -0.5f,  10.0f,  0.0f, 1.0f, 0.0f,   0.0f,  0.0f,
-    -10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,   0.0f, 10.0f,
-
-    10.0f, -0.5f,  10.0f,  0.0f, 1.0f, 0.0f,  10.0f,  0.0f,
-    -10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,   0.0f, 10.0f,
-    10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,  10.0f, 10.0f
-};
+Object *Ground;
 
 int main()
 {
@@ -44,18 +35,10 @@ int main()
     path += "\\BlinnPhongShading";
     Shader PhongShader(path.c_str());
 
-    unsigned int groundVAO, groundVBO;
-    glGenBuffers(1, &groundVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, groundVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(groundVertices), groundVertices, GL_STATIC_DRAW);
-    glGenVertexArrays(1, &groundVAO);
-    glBindVertexArray(groundVAO);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)(3 * sizeof(GL_FLOAT)));
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)(6 * sizeof(GL_FLOAT)));
+    path = string(PATH);
+    path += "\\Ground.txt";
+    Ground = new Object();
+    Ground->Load(path.c_str());
 
     unsigned int groundTexture = loadTexture("..\\Resources\\wood.png");
 
@@ -82,17 +65,13 @@ int main()
         PhongShader.setVec3("lightPos", lightPos);
         PhongShader.setInt("blinn", Blinn ? 1 : 0);
         cout << (Blinn ? "Blinn" : "Phong") << endl;
+        glm::mat4 model;
         // floor
-        glBindVertexArray(groundVAO);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, groundTexture);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        Ground->Render(PhongShader, model);
 
         window.swapBuffers();
         window.pollEvents();
     }
-    glDeleteBuffers(1, &groundVBO);
-    glDeleteVertexArrays(1, &groundVAO);
 }
 
 void do_movement()
