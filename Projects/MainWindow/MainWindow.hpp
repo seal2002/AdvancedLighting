@@ -7,6 +7,8 @@
 
 #include <glad/glad.h>
 
+#include "common/Camera.h"
+
 // Forward declare GLFWwindow to avoid including glfw3.h
 struct GLFWwindow;
 
@@ -25,6 +27,8 @@ namespace OpenGLWindow
         void swapBuffers() const noexcept;
 
         void processInput() const noexcept;
+
+        void movement(Camera &camera) const noexcept;
 
         std::pair<int, int> getWindowSize() const noexcept;
 
