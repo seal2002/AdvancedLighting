@@ -9,6 +9,9 @@ workspace "AdvancedLighting"
     -- We will compile for x86_32. You can change this to x86 for 32 bit builds.
     architecture "x86"
 
+    -- Use system lastest version for target to latest SDK for build Win32 version
+    filter "system:Windows"
+        systemversion "10.0.17134.0"
     -- Configurations are often used to store some compiler / linker settings together.
     -- The Debug configuration will be used by us while debugging.
     -- The optimized Release configuration will be used when shipping the app.
@@ -59,6 +62,11 @@ function linkAssimp()
     -- Our static lib should not link against assimp
     filter "kind:not StaticLib"
         links "assimp-vc140-mt"
+    filter { "system:windows" }
+        -- copy a file from the objects directory to the target directory
+        postbuildcommands {
+            "{COPY} %{wks.location}..\\dlls\\assimp-vc140-mt.dll %{cfg.targetdir}"
+        }
     filter {}
 end
 
@@ -129,11 +137,6 @@ function GenerateProject(s)
 print("Generate Project " .. s)
 project (s)
     kind "ConsoleApp"
-
-    -- We also need the headers
-    filter { "system:Windows" }
-    files "Libraries/common/*.h"
-
     includedirs "Projects/MainWindowLib"
     includedirs "Libraries"
     includedirs "Libraries/freetype/include"
@@ -150,14 +153,9 @@ project (s)
         links { "GL" }
 
     filter { "system:windows" }
-    vpaths {
-    ["Headers"] = "Libraries/common/**.h",
-    ["Sources/*"] = "./Projects/" .. s .. "/**.cpp",
-    ["Shader"] = {"**.fs", "**.vs"}
-    }
+        -- files "Libraries/common/*.h"
+        files { path.join("Projects", s, "**.cpp"), }
 
-    filter { "system:Windows" }
-    files { './Projects/' .. s .. '/**', }
 end
 
 -- List of Project
