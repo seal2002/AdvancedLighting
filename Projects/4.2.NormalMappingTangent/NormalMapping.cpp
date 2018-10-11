@@ -13,7 +13,7 @@
 
 using namespace OpenGLWindow;
 
-#define PATH "..\\Projects\\4.1.NormalMapping"
+#define PATH "..\\Projects\\4.2.NormalMappingTangent"
 
 const int SCR_W = 1280;
 const int SCR_H = 720;
@@ -45,7 +45,10 @@ void main()
 
     // lighting info
     // -------------
-    glm::vec3 lightPos(0.0f, 0.0f, 4.0f);
+    glm::vec3 lightPos(0.0f, 0.0f, 2.0f);
+
+	// Init tagent
+	face.CalculateTBTangle();
 
     // Init Vertex data
     cube.Load("..\\Resources\\Cube.txt");
@@ -82,11 +85,11 @@ void main()
 		model = glm::mat4();
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, 1.0f));
         model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        face.Render(NormalShader, model);
+        face.Render(NormalShader, model, true);
 
         model = glm::mat4();
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0));
-        face.Render(NormalShader, model);
+        face.Render(NormalShader, model, true);
 
         //// Set attribute for Visualizing Normal Vector
         visualizingNormalShader.use();
