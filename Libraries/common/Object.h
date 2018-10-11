@@ -45,6 +45,11 @@ public:
                     arr.push_back(var);
             }
         }
+		else
+		{
+			std::cout << "Can not load the file " << fileName << std::endl;
+		}
+		fstream.close();
 
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);

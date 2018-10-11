@@ -57,7 +57,6 @@ namespace OpenGLWindow
     {
         if (glfwGetKey(wnd, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(wnd, true);
-        memset(keyReleased, 0, GLFW_KEY_LAST);
     }
 
     std::pair<int, int> Window::getWindowSize() const noexcept
@@ -77,6 +76,42 @@ namespace OpenGLWindow
         return keyReleased;
     }
 
+    void Window::movement(Camera &camera) const noexcept
+    {
+        if (keyPressed[GLFW_KEY_W])
+        {
+            camera.ProcessKeyboard(Camera_Movement::FORWARD);
+        }
+        if (keyPressed[GLFW_KEY_S])
+        {
+            camera.ProcessKeyboard(Camera_Movement::BACKWARD);
+        }
+        if (keyPressed[GLFW_KEY_A])
+        {
+            camera.ProcessKeyboard(Camera_Movement::LEFT);
+        }
+        if (keyPressed[GLFW_KEY_D])
+        {
+            camera.ProcessKeyboard(Camera_Movement::RIGHT);
+        }
+        if (keyPressed[GLFW_KEY_LEFT])
+        {
+            camera.ProcessKeyboard(Camera_Movement::ROTATE_LEFT);
+        }
+        if (keyPressed[GLFW_KEY_RIGHT])
+        {
+            camera.ProcessKeyboard(Camera_Movement::ROTATE_RIGHT);
+        }
+        if (keyPressed[GLFW_KEY_UP])
+        {
+            camera.ProcessKeyboard(Camera_Movement::ROTATE_UP);
+        }
+        if (keyPressed[GLFW_KEY_DOWN])
+        {
+            camera.ProcessKeyboard(Camera_Movement::ROTATE_DOWN);
+        }
+    }
+
     void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     {
         glViewport(0, 0, width, height);
@@ -84,6 +119,8 @@ namespace OpenGLWindow
 
     void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
     {
+		if (key < 0 || key > GLFW_KEY_LAST)
+			return;
         if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
             glfwSetWindowShouldClose(window, GL_TRUE);
         if (action == GLFW_PRESS)

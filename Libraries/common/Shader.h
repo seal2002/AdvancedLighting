@@ -158,7 +158,7 @@ public:
 
         glDeleteShader(vertex);
         glDeleteShader(fragment);
-        if (!geometryPath.compare(""))
+        if (geometryPath.compare("") != 0)
             glDeleteShader(geometry);
         return true;
     }
