@@ -37,7 +37,7 @@ public:
             while (std::getline(fstream, line))
             {
                 float var;
-                if (line.compare("/") == 1)
+                if (line.compare(0, 1, "/") == 0)
                     continue;
                 numline++;
                 istringstream ss(line);
@@ -45,6 +45,7 @@ public:
                     arr.push_back(var);
             }
         }
+
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
         // fill buffer
@@ -62,7 +63,7 @@ public:
         glBindVertexArray(0);
     }
 
-    ~Object() 
+    ~Object()
     {
         glDeleteBuffers(1, &VBO);
         glDeleteVertexArrays(1, &VAO);
