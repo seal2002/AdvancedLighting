@@ -47,7 +47,7 @@ void main()
 
     // lighting info
     // -------------
-    glm::vec3 lightPos(0.0f, 0.0f, 4.0f);
+    glm::vec3 lightPos(0.0f, 0.0f, 2.0f);
 
     // Init Vertex data
     cube.Load("..\\Resources\\Cube.txt");
@@ -84,7 +84,11 @@ void main()
 
         glm::mat4 model;
         model = glm::mat4();
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0));
+        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0));
+        face.Render(NormalShader, model);
+
+        model = glm::mat4();
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f));
         face.Render(NormalShader, model);
 
         //// Set attribute for Visualizing Normal Vector
