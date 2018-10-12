@@ -22,7 +22,7 @@ void main()
     vec3 color = texture(diffuseTexture, fs_in.TexCoords).rgb;
     vec3 lightColor = vec3(0.5);
     // ambient
-    vec3 ambient = 0.3 * color;
+    vec3 ambient = 0.1 * color;
     // diffuse
     vec3 lightDir = normalize(lightPos - fs_in.FragPos);
     float diff = max(dot(lightDir, normal), 0.0);

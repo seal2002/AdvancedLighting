@@ -47,12 +47,9 @@ void main()
     // -------------
     glm::vec3 lightPos(0.0f, 0.0f, 2.0f);
 
-	// Init tagent
-	face.CalculateTBTangle();
-
     // Init Vertex data
     cube.Load("..\\Resources\\Cube.txt");
-    face.Load("..\\Resources\\Face.txt");
+    face.Load("..\\Resources\\Face.txt", true);
 
     NormalShader.use();
     NormalShader.setInt("diffuseTexture", 0);
@@ -81,15 +78,15 @@ void main()
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, normalTexture);
 
-		glm::mat4 model;
-		model = glm::mat4();
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        face.Render(NormalShader, model, true);
+        glm::mat4 model;
+        model = glm::mat4();
+        model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        face.Render(NormalShader, model);
 
         model = glm::mat4();
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0));
-        face.Render(NormalShader, model, true);
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f));
+        face.Render(NormalShader, model);
 
         //// Set attribute for Visualizing Normal Vector
         visualizingNormalShader.use();
