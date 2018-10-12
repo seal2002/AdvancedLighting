@@ -11,35 +11,35 @@ class Object
 private:
     unsigned int VAO, VBO;
     float *verticle;
-    int numline;
+    int numlines, numVertexs;
     // calculate tangent/bitangent vectors of both triangles
     glm::vec3 tangent1, bitangent1;
     glm::vec3 tangent2, bitangent2;
 
 public:
-    void Render(Shader &shader, glm::mat4 model, bool btTangent = false)
+    void Render(Shader &shader, glm::mat4 model)
     {
         shader.setMat4("model", model);
-        if(btTangent) {
-            shader.setVec3("aTangent", tangent1);
-            shader.setVec3("aBitangent", tangent2);
-        }
         // render Cube
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, numline);
+        glDrawArrays(GL_TRIANGLES, 0, numlines);
         glBindVertexArray(0);
     }
 
     Object()
     {
-        numline = 0;
+        numlines = 0;
     }
 
-    void Load(const char *fileName)
+    void Load(const char *fileName, bool useNormalMap = false)
     {
         ifstream fstream(fileName);
         string line;
         vector<float> arr;
+
+        if(useNormalMap)
+            CalculateTBTangle();
+
         if (fstream)
         {
             while (std::getline(fstream, line))
@@ -47,10 +47,31 @@ public:
                 float var;
                 if (line.compare(0, 1, "/") == 0)
                     continue;
-                numline++;
+                ++numlines;
+                numVertexs = 0;
                 istringstream ss(line);
-                while(ss >> var)
+                while(ss >> var) {
                     arr.push_back(var);
+                    ++numVertexs;
+                }
+                if(useNormalMap) {
+                    if(numlines < 3) { // from the first of 3 edg
+                        arr.push_back(tangent1.x);
+                        arr.push_back(tangent1.y);
+                        arr.push_back(tangent1.z);
+                        arr.push_back(bitangent1.x);
+                        arr.push_back(bitangent1.y);
+                        arr.push_back(bitangent1.z);
+                    } else {
+                        arr.push_back(tangent2.x);
+                        arr.push_back(tangent2.y);
+                        arr.push_back(tangent2.z);
+                        arr.push_back(bitangent2.x);
+                        arr.push_back(bitangent2.y);
+                        arr.push_back(bitangent2.z);
+                    }
+                    numVertexs += 6;
+                }
             }
         }
 		else
@@ -67,11 +88,17 @@ public:
         // link vertex attributes
         glBindVertexArray(VAO);
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, numVertexs * sizeof(float), (void*)0);
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, numVertexs * sizeof(float), (void*)(3 * sizeof(float)));
         glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, numVertexs * sizeof(float), (void*)(6 * sizeof(float)));
+        if(useNormalMap) {
+            glEnableVertexAttribArray(3);
+            glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, numVertexs * sizeof(float), (void*)(8 * sizeof(float)));
+            glEnableVertexAttribArray(4);
+            glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, numVertexs * sizeof(float), (void*)(11 * sizeof(float)));
+        }
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
     }
