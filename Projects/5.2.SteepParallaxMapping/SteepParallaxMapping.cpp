@@ -42,7 +42,7 @@ void main()
     Shader visualizingShader((path + ".vs").c_str(), (path + ".fs").c_str(), (path + ".gs").c_str());
     // load textures
     // -------------
-    unsigned int woodTexture = loadTexture("..\\Resources\\wood.png");
+    unsigned int woodTexture = loadTexture("..\\Resources\\toy_box_diffuse.png");
     unsigned int normalTexture = loadTexture("..\\Resources\\toy_box_normal.png");
     unsigned int depthTexture = loadTexture("..\\Resources\\toy_box_disp.png");
 
