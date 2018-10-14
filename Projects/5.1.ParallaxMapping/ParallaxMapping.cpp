@@ -22,6 +22,8 @@ Object cube;
 Object face;
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 
+float heightScale = 0.1f;
+
 void main()
 {
     Window window(SCR_W, SCR_H, "Parallax Mapping");
@@ -29,7 +31,7 @@ void main()
 
     string path(PATH);
     path += "\\ParallaxMapping";
-    Shader NormalShader(path);
+    Shader shader(path);
 
     path = string(PATH);
     path += "\\light";
@@ -37,7 +39,7 @@ void main()
 
     path = string(PATH);
     path += "\\visualizingNormal";
-    Shader visualizingNormalShader((path + ".vs").c_str(), (path + ".fs").c_str(), (path + ".gs").c_str());
+    Shader visualizingShader((path + ".vs").c_str(), (path + ".fs").c_str(), (path + ".gs").c_str());
     // load textures
     // -------------
     unsigned int wallTexture = loadTexture("..\\Resources\\brickwall2.jpg");
@@ -46,34 +48,35 @@ void main()
 
     // lighting info
     // -------------
-    glm::vec3 lightPos(0.0f, 0.0f, 2.0f);
+    glm::vec3 lightPos(0.5f, 1.0f, 0.3f);
 
     // Init Vertex data
     cube.Load("..\\Resources\\Cube.txt");
     face.Load("..\\Resources\\Face.txt", true);
 
-    NormalShader.use();
-    NormalShader.setInt("diffuseTexture", 0);
-    NormalShader.setInt("normalTexture", 1);
-    NormalShader.setInt("depthTexture", 2);
+    shader.use();
+    shader.setInt("diffuseTexture", 0);
+    shader.setInt("normalTexture", 1);
+    shader.setInt("depthTexture", 2);
 
     while(!window.shouldClose())
     {
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
         window.movement(camera);
 
-        NormalShader.use();
+        shader.use();
         glm::mat4 projection = glm::perspective(camera.zoom, float(SCR_W) / float(SCR_H), 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
-        NormalShader.setMat4("projection", projection);
-        NormalShader.setMat4("view", view);
+        shader.setMat4("projection", projection);
+        shader.setMat4("view", view);
 
 
         // set light uniforms
-        NormalShader.setVec3("viewPos", camera.cameraPos);
-        NormalShader.setVec3("lightPos", lightPos);
+        shader.setVec3("viewPos", camera.cameraPos);
+        shader.setVec3("lightPos", lightPos);
+        shader.setFloat("heightScale", heightScale);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, wallTexture);
@@ -86,19 +89,19 @@ void main()
         model = glm::mat4();
         model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0f));
         model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        face.Render(NormalShader, model);
+        face.Render(shader, model);
 
         model = glm::mat4();
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f));
-        face.Render(NormalShader, model);
+        face.Render(shader, model);
 
         //// Set attribute for Visualizing Normal Vector
-        visualizingNormalShader.use();
-        visualizingNormalShader.setMat4("projection", projection);
-        visualizingNormalShader.setMat4("view", view);
+        visualizingShader.use();
+        visualizingShader.setMat4("projection", projection);
+        visualizingShader.setMat4("view", view);
 
         // Render Normal Vector
-        face.Render(visualizingNormalShader, model);
+        face.Render(visualizingShader, model);
 
         // Render light
         lightShader.use();
