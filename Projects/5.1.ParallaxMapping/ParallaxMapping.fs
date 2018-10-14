@@ -16,7 +16,7 @@ uniform sampler2D depthTexture;
 uniform float heightScale;
 
 vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
-{ 
+{
     float height =  texture(depthTexture, texCoords).r;
     vec2 p = viewDir.xy * (height * heightScale);
     return texCoords - p;    
