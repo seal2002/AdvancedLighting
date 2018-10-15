@@ -62,10 +62,14 @@ void main()
 
         window.movement(camera);
 
+		glm::mat4 projection = glm::perspective(45.0f, float(SCR_W) / float(SCR_H), 0.1f, 100.0f);
+		glm::mat4 view = camera.GetViewMatrix();
+
         // Render light
         lightShader.use();
         lightShader.setMat4("projection", projection);
         lightShader.setMat4("view", view);
+        glm::mat4 model;
         model = glm::mat4();
         model = glm::translate(model, lightPos);
         model = glm::scale(model, glm::vec3(0.1f));
@@ -73,8 +77,7 @@ void main()
 
         // Render Face 
         NormalShader.use();
-        glm::mat4 projection = glm::perspective(45.0f, float(SCR_W) / float(SCR_H), 0.1f, 100.0f);
-        glm::mat4 view = camera.GetViewMatrix();
+
         NormalShader.setMat4("projection", projection);
         NormalShader.setMat4("view", view);
 
@@ -87,7 +90,6 @@ void main()
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, normalTexture);
 
-        glm::mat4 model;
         model = glm::mat4();
         model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0f));
         model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
