@@ -97,10 +97,10 @@ void main()
 
     while(!window.shouldClose())
     {
+        window.movement(camera);
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-        window.movement(camera);
 
         // 1. render scene into floating point framebuffer
         // -----------------------------------------------
@@ -108,7 +108,7 @@ void main()
             glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
             glm::mat4 projection = glm::perspective(glm::radians(camera.zoom), float(SCR_W) / float(SCR_H), 0.1f, 100.0f);
             glm::mat4 view = camera.GetViewMatrix();
-            
+
             lightShader.use();
             lightShader.setMat4("projection", projection);
             lightShader.setMat4("view", view);
@@ -117,7 +117,7 @@ void main()
             // set lighting uniforms
             for(int i = 0; i < lightPositions.size(); i++) {
                 lightShader.setVec3("lights[" + std::to_string(i) + "].Position", lightPositions[i]);
-                lightShader.setVec3("lights[" + std::to_string(i) + "].Color", lightPositions[i]);
+                lightShader.setVec3("lights[" + std::to_string(i) + "].Color", lightColors[i]);
             }
             lightShader.setVec3("viewPos", camera.cameraPos);
             // render tunnel

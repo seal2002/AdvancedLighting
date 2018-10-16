@@ -17,7 +17,7 @@ uniform sampler2D diffuseTexture;
 uniform vec3 viewPos;
 
 void main()
-{           
+{
     vec3 color = texture(diffuseTexture, fs_in.TexCoords).rgb;
     vec3 normal = normalize(fs_in.Normal);
     // ambient
@@ -29,13 +29,13 @@ void main()
         // diffuse
         vec3 lightDir = normalize(lights[i].Position - fs_in.FragPos);
         float diff = max(dot(lightDir, normal), 0.0);
-        vec3 diffuse = lights[i].Color * diff * color;      
-        vec3 result = diffuse;        
+        vec3 diffuse = lights[i].Color * diff * color;
+        vec3 result = diffuse;
         // attenuation (use quadratic as we have gamma correction)
         float distance = length(fs_in.FragPos - lights[i].Position);
         result *= 1.0 / (distance * distance);
         lighting += result;
-                
+
     }
     FragColor = vec4(ambient + lighting, 1.0);
 }
