@@ -6,7 +6,7 @@
 // utility function for loading a 2D texture from file
 // ---------------------------------------------------
 
-unsigned int loadTexture(char const *path, bool isGammaCorrection)
+unsigned int loadTexture(char const *path, bool isGammaCorrection = false)
 {
     unsigned int textureID;
     glGenTextures(1, &textureID);
@@ -64,11 +64,6 @@ unsigned int loadTexture(char const *path, bool isGammaCorrection)
     }
 
     return textureID;
-}
-
-unsigned int loadTexture(char const *path)
-{
-    return loadTexture(path, false);
 }
 
 unsigned int loadTextureCubeMap(vector<std::string> faces)
