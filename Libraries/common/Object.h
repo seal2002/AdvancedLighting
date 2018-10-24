@@ -14,6 +14,8 @@ private:
     // calculate tangent/bitangent vectors of both triangles
     glm::vec3 tangent1, bitangent1;
     glm::vec3 tangent2, bitangent2;
+    glm::vec3 pos, scale;
+    float rotate;
 
 public:
     void Render(Shader &shader, glm::mat4 model)
@@ -25,9 +27,31 @@ public:
         glBindVertexArray(0);
     }
 
+    void Render(Shader &shader)
+    {
+        glm::mat4 model = glm::mat4();
+        model = glm::translate(model, pos);
+        model = glm::scale(model, scale);
+        model = glm::rotate(model, glm::radians(rotate), glm::normalize(glm::vec3(1.0f, 0.0f, 1.0f)));
+        shader.setMat4("model", model);
+        // render Cube
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, numlines);
+        glBindVertexArray(0);
+    }
+
     Object()
     {
         numlines = 0;
+        pos = glm::vec3();
+        scale = glm::vec3();
+    }
+
+    void SetProperties(glm::vec3 Pos, glm::vec3 Scale, float Rotate = 0)
+    {
+        pos = Pos;
+        scale = Scale;
+        rotate = Rotate;
     }
 
     void Load(const char *fileName, bool useNormalMap = false)
