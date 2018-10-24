@@ -20,7 +20,7 @@ const int SCR_H = 720;
 
 Object cube;
 Object face;
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera;
 
 bool hdr = true;
 float exposure = 1.0f;
@@ -100,7 +100,6 @@ void main()
         window.movement(camera);
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
 
         // 1. render scene into floating point framebuffer
         // -----------------------------------------------
