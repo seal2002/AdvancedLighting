@@ -15,7 +15,7 @@
 using namespace OpenGLWindow;
 
 void do_movement();
-unsigned int loadTexture(const char *path);
+
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 bool* keysPressed;
 bool* keysReleased;
