@@ -11,7 +11,7 @@ workspace "AdvancedLighting"
 
     -- Use system lastest version for target to latest SDK for build Win32 version
     filter "system:Windows"
-        systemversion "10.0.17134.0"
+        systemversion "latest"
     -- Configurations are often used to store some compiler / linker settings together.
     -- The Debug configuration will be used by us while debugging.
     -- The optimized Release configuration will be used when shipping the app.
