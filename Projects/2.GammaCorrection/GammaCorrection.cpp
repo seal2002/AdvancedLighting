@@ -14,8 +14,6 @@
 
 using namespace OpenGLWindow;
 
-void do_movement();
-unsigned int loadTexture(const char *path);
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 bool* keysPressed;
 bool* keysReleased;
@@ -62,8 +60,14 @@ int main()
     {
         keysPressed = window.getKeyPress();
         keysReleased = window.getKeyRelease();
-        do_movement();
+        
         window.processInput();
+        window.movement(camera);
+
+        if (keysReleased[GLFW_KEY_C])
+        {
+            gamma = !gamma;
+        }
 
         // render
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -88,45 +92,5 @@ int main()
 
         window.swapBuffers();
         window.pollEvents();
-    }
-}
-
-void do_movement()
-{
-    if (keysPressed[GLFW_KEY_W])
-    {
-        camera.ProcessKeyboard(Camera_Movement::FORWARD);
-    }
-    if (keysPressed[GLFW_KEY_S])
-    {
-        camera.ProcessKeyboard(Camera_Movement::BACKWARD);
-    }
-    if (keysPressed[GLFW_KEY_A])
-    {
-        camera.ProcessKeyboard(Camera_Movement::LEFT);
-    }
-    if (keysPressed[GLFW_KEY_D])
-    {
-        camera.ProcessKeyboard(Camera_Movement::RIGHT);
-    }
-    if (keysPressed[GLFW_KEY_LEFT])
-    {
-        camera.ProcessKeyboard(Camera_Movement::ROTATE_LEFT);
-    }
-    if (keysPressed[GLFW_KEY_RIGHT])
-    {
-        camera.ProcessKeyboard(Camera_Movement::ROTATE_RIGHT);
-    }
-    if (keysPressed[GLFW_KEY_UP])
-    {
-        camera.ProcessKeyboard(Camera_Movement::ROTATE_UP);
-    }
-    if (keysPressed[GLFW_KEY_DOWN])
-    {
-        camera.ProcessKeyboard(Camera_Movement::ROTATE_DOWN);
-    }
-    if (keysReleased[GLFW_KEY_C])
-    {
-        gamma = !gamma;
     }
 }

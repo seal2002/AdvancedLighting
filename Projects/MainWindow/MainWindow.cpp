@@ -57,6 +57,7 @@ namespace OpenGLWindow
     {
         if (glfwGetKey(wnd, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(wnd, true);
+        memset(keyReleased, 0, GLFW_KEY_LAST);
     }
 
     std::pair<int, int> Window::getWindowSize() const noexcept

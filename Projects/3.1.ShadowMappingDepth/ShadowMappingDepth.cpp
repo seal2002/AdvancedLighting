@@ -16,8 +16,6 @@ using namespace OpenGLWindow;
 void renderScene(Shader &shader);
 void renderQuad();
 
-void do_movement();
-unsigned int loadTexture(const char *path);
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 bool* keysPressed;
 bool gamma = false;
@@ -80,8 +78,8 @@ int main()
     while (!window.shouldClose())
     {
         keysPressed = window.getKeyPress();
-        do_movement();
         window.processInput();
+        window.movement(camera);
 
         // render
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -176,40 +174,4 @@ void renderQuad()
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     glBindVertexArray(0);
-}
-
-void do_movement()
-{
-    if (keysPressed[GLFW_KEY_W])
-    {
-        camera.ProcessKeyboard(Camera_Movement::FORWARD);
-    }
-    if (keysPressed[GLFW_KEY_S])
-    {
-        camera.ProcessKeyboard(Camera_Movement::BACKWARD);
-    }
-    if (keysPressed[GLFW_KEY_A])
-    {
-        camera.ProcessKeyboard(Camera_Movement::LEFT);
-    }
-    if (keysPressed[GLFW_KEY_D])
-    {
-        camera.ProcessKeyboard(Camera_Movement::RIGHT);
-    }
-    if (keysPressed[GLFW_KEY_LEFT])
-    {
-        camera.ProcessKeyboard(Camera_Movement::ROTATE_LEFT);
-    }
-    if (keysPressed[GLFW_KEY_RIGHT])
-    {
-        camera.ProcessKeyboard(Camera_Movement::ROTATE_RIGHT);
-    }
-    if (keysPressed[GLFW_KEY_UP])
-    {
-        camera.ProcessKeyboard(Camera_Movement::ROTATE_UP);
-    }
-    if (keysPressed[GLFW_KEY_DOWN])
-    {
-        camera.ProcessKeyboard(Camera_Movement::ROTATE_DOWN);
-    }
 }

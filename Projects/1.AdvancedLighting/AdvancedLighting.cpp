@@ -14,8 +14,6 @@
 
 using namespace OpenGLWindow;
 
-void do_movement();
-unsigned int loadTexture(const char *path);
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 bool* keysPressed;
 bool* keysReleased;
@@ -48,8 +46,14 @@ int main()
     {
         keysPressed = window.getKeyPress();
         keysReleased = window.getKeyRelease();
-        do_movement();
+        if (keysReleased[GLFW_KEY_C])
+        {
+            Blinn = !Blinn;
+            cout << (Blinn ? "Blinn" : "Phong") << endl;
+        }
         window.processInput();
+        window.movement(camera);
+
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
@@ -62,52 +66,12 @@ int main()
         PhongShader.setVec3("viewPos", camera.cameraPos);
         PhongShader.setVec3("lightPos", lightPos);
         PhongShader.setInt("blinn", Blinn ? 1 : 0);
-        cout << (Blinn ? "Blinn" : "Phong") << endl;
+
         glm::mat4 model;
         // floor
         Ground->Render(PhongShader, model);
 
         window.swapBuffers();
         window.pollEvents();
-    }
-}
-
-void do_movement()
-{
-    if (keysPressed[GLFW_KEY_W])
-    {
-        camera.ProcessKeyboard(Camera_Movement::FORWARD);
-    }
-    if (keysPressed[GLFW_KEY_S])
-    {
-        camera.ProcessKeyboard(Camera_Movement::BACKWARD);
-    }
-    if (keysPressed[GLFW_KEY_A])
-    {
-        camera.ProcessKeyboard(Camera_Movement::LEFT);
-    }
-    if (keysPressed[GLFW_KEY_D])
-    {
-        camera.ProcessKeyboard(Camera_Movement::RIGHT);
-    }
-    if (keysPressed[GLFW_KEY_LEFT])
-    {
-        camera.ProcessKeyboard(Camera_Movement::ROTATE_LEFT);
-    }
-    if (keysPressed[GLFW_KEY_RIGHT])
-    {
-        camera.ProcessKeyboard(Camera_Movement::ROTATE_RIGHT);
-    }
-    if (keysPressed[GLFW_KEY_UP])
-    {
-        camera.ProcessKeyboard(Camera_Movement::ROTATE_UP);
-    }
-    if (keysPressed[GLFW_KEY_DOWN])
-    {
-        camera.ProcessKeyboard(Camera_Movement::ROTATE_DOWN);
-    }
-    if (keysReleased[GLFW_KEY_C])
-    {
-        Blinn = !Blinn;
     }
 }
