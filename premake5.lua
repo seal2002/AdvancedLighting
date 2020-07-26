@@ -12,6 +12,7 @@ workspace "AdvancedLighting"
     -- Use system lastest version for target to latest SDK for build Win32 version
     filter "system:Windows"
         systemversion "latest"
+    filter {}
     -- Configurations are often used to store some compiler / linker settings together.
     -- The Debug configuration will be used by us while debugging.
     -- The optimized Release configuration will be used when shipping the app.
@@ -23,21 +24,21 @@ workspace "AdvancedLighting"
     filter { "configurations:Debug" }
         -- We want debug symbols in our debug config
         symbols "On"
-
+    filter {}
     -- We now only set settings for Release
     filter { "configurations:Release" }
         -- Release should be optimized
         optimize "On"
 
     -- Reset the filter for other settings
-    filter { }
+    filter {}
 
     -- Here we use some "tokens" (the things between %{ ... }). They will be replaced by Premake
     -- automatically when configuring the projects.
     -- * %{prj.name} will be replaced by "ExampleLib" / "App" / "UnitTests"
     --  * %{cfg.longname} will be replaced by "Debug" or "Release" depending on the configuration
     -- The path is relative to *this* folder
-    targetdir ("Build/Bin/%{prj.name}/%{cfg.longname}")
+    targetdir ("Build/Bin/%{cfg.longname}")
     objdir ("Build/Obj/%{prj.name}/%{cfg.longname}")
 
 -- This function includes GLFW's header files
@@ -146,16 +147,19 @@ project (s)
     links "STB_IMAGE"
     -- Now we need to add the OpenGL system libraries
 
-    filter { "system:windows" }
-        links { "OpenGL32" }
-
     filter { "system:not windows" }
         links { "GL" }
+    filter {}
 
     filter { "system:windows" }
-        -- files "Libraries/common/*.h"
-        files { path.join("Projects", s, "**.cpp"), }
+        links { "OpenGL32" }
+        vpaths {
+            ["Shader/*"] = {path.join("./Projects/" .. s .. "/**.fs"), path.join("./Projects/" .. s .. "/**.vs"), path.join("./Projects/" .. s .. "/**.gs")},
+            ["code/*"] = {path.join("./Projects/" .. s .. "/**.cpp")},
+        }
+    filter {}
 
+    files { path.join('./Projects/' .. s .. '/**'),}
 end
 
 -- List of Project
