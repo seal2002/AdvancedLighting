@@ -16,6 +16,11 @@ using namespace OpenGLWindow;
 void renderScene(Shader &shader);
 void renderQuad();
 
+<<<<<<< HEAD
+=======
+void do_movement();
+
+>>>>>>> 4cacdda03bc2ab57951192b7f47dcca22db66d99
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 bool* keysPressed;
 bool gamma = false;

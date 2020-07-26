@@ -64,6 +64,7 @@ void main()
     {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+        lightPos = glm::vec3(glm::sin(glfwGetTime()), glm::cos(glfwGetTime()), double(lightPos.z));
 
         window.movement(camera);
 
@@ -97,12 +98,12 @@ void main()
         face.Render(shader, model);
 
         //// Set attribute for Visualizing Normal Vector
-        visualizingShader.use();
-        visualizingShader.setMat4("projection", projection);
-        visualizingShader.setMat4("view", view);
+        // visualizingShader.use();
+        // visualizingShader.setMat4("projection", projection);
+        // visualizingShader.setMat4("view", view);
 
         // Render Normal Vector
-        face.Render(visualizingShader, model);
+        // face.Render(visualizingShader, model);
 
         // Render light
         lightShader.use();
